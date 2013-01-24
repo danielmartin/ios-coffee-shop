@@ -5,7 +5,13 @@ iOS Coffee Shop is a fun name for a set of Bash scripts that automatizes the pro
 
 The main script is coffee_shop.sh. The syntax is as follows:
 
-	./coffee_shop [-v version] [-p provisioning_profile] [-c developer_certificate] [-s sdk] [-r] [-b] [-g] [-l] [-a] [-d product_name] [-o output_dir] REPO_URI PROJECT_NAME
+	./coffee_shop [-v version] 
+				  [-p provisioning_profile] 
+				  [-c developer_certificate] 
+				  [-s sdk] 
+				  [-r] [-b] [-g] [-l] [-a] 
+				  [-d product_name] 
+				  [-o output_dir] REPO_URI PROJECT_NAME
 
 
 - The -v option sets a particular version in the project file before compilation is performed.
