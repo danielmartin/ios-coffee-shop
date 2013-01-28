@@ -15,7 +15,7 @@ The main script is coffee_shop.sh. The syntax is as follows:
 
 
 - The -v option sets a particular version in the project file before compilation is performed.
-- The -p option specifies a mobile provisioning profile. See more information at http://developer.apple.com/library/ios/#documentation/ToolsLanguages/Conceptual/DevPortalGuide/CreatingandDownloadingDevelopmentProvisioningProfiles/CreatingandDownloadingDevelopmentProvisioningProfiles.html
+- The -p option specifies a mobile provisioning profile. See more information [here](http://developer.apple.com/library/ios/#documentation/ToolsLanguages/Conceptual/DevPortalGuide/CreatingandDownloadingDevelopmentProvisioningProfiles/CreatingandDownloadingDevelopmentProvisioningProfiles.html)
 - The -c option specifies a developer certificate to sign the app.
 - The -s option provides the iOS SDK version you want to use to compile the project. You can get a list of the available OSX/iOS SDKs by running this command: `xcodebuild -showsdks`
 - The -r option builds a Release version of the app.
@@ -38,8 +38,9 @@ If you aim to target a physical device, your computer must have a development ce
 
 Usage Example
 -------------
+The following example downloads an iOS project from an SVN repo, sets it to version 1.0, and code signs it using the "John Smith" developer identity. (Private and public keys must be installed on the build machine for this to work.)
 
-(TODO)
+	./coffee_shop.sh -v 1.0 -c "iPhone Developer: John Smith" -s iphoneos -o <Destination_Path> <Repo_URL> <Project_Name>
 
 Future work
 -----------
