@@ -26,7 +26,7 @@
 
 . $(dirname $0)/common.sh
 
-if [ "$#" -lt 10 ]; then
+if [ "$#" -lt 11 ]; then
     show_coffee_maker_usage
 fi
 
@@ -41,6 +41,10 @@ DEST_DIR="${8}"
 VALIDATE_IPA="${9}"
 ARCHIVE_IPA="${10}"
 APP_NAME="$PROJECT_NAME".app
+TEMP_DIR="${11}"
+
+# Change to temporary directory
+pushd "$TEMP_DIR" >/dev/null
 
 if [ -z "$IPA_FINAL_PRODUCT_NAME" ]; then
     IPA_FINAL_PRODUCT_NAME="$PROJECT_NAME"
@@ -62,59 +66,27 @@ fi
 function xcode_build_app() {
     show_progress "Building app..."
     if [[ "$SDK" == "iphoneos" ]]; then
-	ARCH="armv7 armv6"
+	ARCH="armv7"
     else
 	ARCH="i386"
     fi
-    if [[ -n "$CODE_SIGN_IDENTITY" && -n "$PROFILE_UUID" ]]; then
-	$XCODEBUILD \
-	    -project "$PROJECT_NAME".xcodeproj \
-	    -alltargets \
-	    -sdk $SDK \
-	    -configuration $CONFIGURATION \
-	    -arch "$ARCH" \
-	    SYMROOT=$OUTPUT_DIR \
-	    OBJROOT=$OUTPUT_DIR \
-	    CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" \
-	    PROVISIONING_PROFILE="$PROFILE_UUID" \
-	    clean build \
-	    || die "Couldn't build project. Coffee maker stops."
-    elif [[ -n "$CODE_SIGN_IDENTITY" ]]; then
-	$XCODEBUILD \
-	    -project "$PROJECT_NAME".xcodeproj \
-	    -alltargets \
-	    -sdk $SDK \
-	    -configuration $CONFIGURATION \
-	    -arch "$ARCH" \
-	    SYMROOT=$OUTPUT_DIR \
-	    OBJROOT=$OUTPUT_DIR \
-	    CODE_SIGN_IDENTITY="$CODE_SIGN_IDENTITY" \
-	    clean build \
-	    || die "Couldn't build project. Coffee maker stops."
-    elif [[ -n "$PROFILE_UUID" ]]; then
-	$XCODEBUILD \
-	    -project "$PROJECT_NAME".xcodeproj \
-	    -alltargets \
-	    -sdk $SDK \
-	    -configuration $CONFIGURATION \
-	    -arch "$ARCH" \
-	    SYMROOT=$OUTPUT_DIR \
-	    OBJROOT=$OUTPUT_DIR \
-	    PROVISIONING_PROFILE="$PROFILE_UUID" \
-	    clean build \
-	    || die "Couldn't build project. Coffee maker stops."
-    else
-	$XCODEBUILD \
-	    -project "$PROJECT_NAME".xcodeproj \
-	    -alltargets \
-	    -sdk $SDK \
-	    -configuration $CONFIGURATION \
-	    -arch "$ARCH" \
-	    SYMROOT=$OUTPUT_DIR \
-	    OBJROOT=$OUTPUT_DIR \
-	    clean build \
-	    || die "Couldn't build project. Coffee maker stops."
-    fi
+
+    XCODE_CMD="  -alltargets \
+                 -sdk $SDK \
+                 -configuration $CONFIGURATION \
+                 -arch $ARCH \
+                 SYMROOT=$OUTPUT_DIR \
+                 OBJROOT=$OUTPUT_DIR \
+                 clean build"
+
+    [ -n "$PROJECT_NAME" ] && XCODE_CMD="${XCODE_CMD}"" -project $PROJECT_NAME.xcodeproj"
+    [ -n "$CODE_SIGN_IDENTITY" ] && XCODE_CMD="${XCODE_CMD}"" CODE_SIGN_IDENTITY=\"$CODE_SIGN_IDENTITY\""
+    [ -n "$PROFILE_UUID" ] && XCODE_CMD="${XCODE_CMD}"" PROVISIONING_PROFILE=$PROFILE_UUID"
+
+    XCODE_CMD="$XCODEBUILD""${XCODE_CMD}"
+    echo $XCODE_CMD
+
+    eval $XCODE_CMD || die "Couldn't build project. Coffee maker stops."
 }
 
 #----------------------------------------------------------------
@@ -182,6 +154,13 @@ function archive_app_ipa() {
     popd >/dev/null
 }
 
+function delete_temporaries() {
+    popd >/dev/null
+    rm -rf "$TEMP_DIR"
+    rm -rf "$OUTPUT_DIR"
+    rm -rf "$PACKAGE_DIR"
+}
+
 xcode_build_app
 build_app_ipa
 if [ -n "$VALIDATE_IPA" ]; then
@@ -191,3 +170,4 @@ if [ -n "$ARCHIVE_IPA" ]; then
     archive_app_ipa
 fi
 coffee_done
+delete_temporaries

@@ -34,14 +34,13 @@ function show_progress() {
 }
 
 function show_coffee_shop_usage() {
-    echo "Usage: $0 [-v version] [-p provisioning_profile] [-c developer_certificate] [-s sdk] [-r] [-b] [-g] [-l] [-a] [-d product_name] [-o output_dir] REPO_URI REPO_NAME"
+    echo "Usage: $0 [-v version] [-p provisioning_profile] [-c developer_certificate] [-s sdk] [-r] [-b] [-g] [-l] [-a] [-d product_name] [-e project_name] [-o output_dir] REPO_URI"
     echo "   -r                 Compile a release version of the app"
     echo "   -b                 The URL is an SVN repository"
     echo "   -g                 The URL is a Git repository"
     echo "   -l                 Perform a validation step to the .ipa"
     echo "   -a                 Archive the .ipa"
     echo "   REPO_URI           Repository URI"
-    echo "   PROJECT_NAME       Project name (without .xcodeproj extension)"
     die "Invalid arguments"
 }
 
