@@ -46,6 +46,7 @@ The following example downloads an iOS project from an SVN repo, sets it to vers
 Future work
 -----------
 
-- Support other repositories (Mercurial, CVS…)
+- Support other repositories (Mercurial, CVS…).
 - More flexibility to ensure it is useful to a wide range of projects.
-- Run application/logic tests before building the .ipa
+- Run application/logic tests before building the .ipa.
+- Inform developers via email.
